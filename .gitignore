@@ -1,17 +1,33 @@
-#java specific
-*.class
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
 
-#netbeans ignore personal stuff
-nbproject/
+# Precompiled Headers
+*.gch
+*.pch
 
-## generic files to ignore
-*~
-*.lock
-*.DS_Store
-*.swp
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
 *.out
+*.app
+*.i*86
+*.x86_64
+*.hex
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# Debug files
+*.dSYM/
+*.su
