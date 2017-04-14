@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
     int nthreads;
     cadena name_red, name_3DGnuplot_conec, name_3DGnuplot_size, main_name, name_aux;
     int flag, i, j;
+
     //Variables Tiempo
     double tini1, tfin1, tfin2, tfin3;
     double tbat1, tbat2;
@@ -32,7 +33,6 @@ int main(int argc, char *argv[]) {
     int j_ran;
     int randi[55];
 
-    //int nviolG;
     int nviol_en_sit;
     int enl_vacios, sit_viola;
 
@@ -62,7 +62,6 @@ int main(int argc, char *argv[]) {
     Gen_Rand(&global_rand);
     randomizar(randi, &j_ran);
     Red_Translape(xms, xmb, sigma, &Translape, &Ri);
-    /**/
 
     /** Creacion **/
     red = Inicializa_Red_RG_CV(L, xmb, xms, sigma, 1, 1, f0, randi, &j_ran); //sin violaciones tipo 2
@@ -80,7 +79,6 @@ int main(int argc, char *argv[]) {
     /*Guardar red sin batidos*/
     sprintf(main_name, "L%d_xmb%1.0f_xms%1.0f_s%1.0f_f0%1.0f_s_%dbat", L, xmb, xms, sigma, f0 * 10.0, NBatidos);
     sprintf(name_red, "archivos/%s", main_name);
-    //Red_guarda(red, L,name_red);
     tfin2 = time(NULL);
     printf("\nTiempo total de creación mas Validaciones:%f segs\n\n", tfin2 - tini1);
     sprintf(name_3DGnuplot_conec, "Gplot3D_C_%s", main_name);
@@ -95,7 +93,7 @@ int main(int argc, char *argv[]) {
 
 
 
-    //NBatidos_T2_RG_MC_Seq(red,L,(double)NBatidos,&nBatidos_Real,randi,&j_ran);
+    NBatidos_T2_RG_MC_Seq(red, L, (double) NBatidos, &nBatidos_Real, randi, &j_ran);
 
     nviol_en_sit = Num_violacSitios(red, L, &sit_viola); //Violaciones tipo 1
     printf("\nDESPUES DE BATIDOS\nNo.Violaciones en Sitios antes Certificacion (Tipo 1): %d, Num Sit c/viol: %d\n", nviol_en_sit, sit_viola);
@@ -118,12 +116,6 @@ int main(int argc, char *argv[]) {
 
     ImgGnuplot3D_x_size(red, name_3DGnuplot_size, L, xms, sigma);
     genera_script_gplot3D_x_size(name_3DGnuplot_size);
-
-    //system("gnuplot script3Dconec");
     system("gnuplot script3Dsize");
-
-
-    //red=Red_carga_archivo(argv[1],&L,&xmb,&xms,&sigma,&CLUSTER_SIZE,&NCLUSTERS);
-
     return 0;
 }
