@@ -83,7 +83,6 @@ void ImgGnuplot3D_x_conectividad(RED red, cadena nom_arch, int L, double xms, do
             for (k = 0; k < L; k++) {
                 f = cuentaEnlaces(i, j, k, L, red);
                 if (f > 0) {
-                    //printf("ne:%d ",f);
                     if (f <= 2) {
                         neS++;
                         fprintf(ap_arch_small, "S %d %d %d\n", i, j, k);

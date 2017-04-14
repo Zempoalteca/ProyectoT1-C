@@ -6,6 +6,7 @@
 //	Creacion de Redes Porosas, con sembrado y batido en un origen dinamico
 //
 //
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -172,8 +173,6 @@ void Ini_red_Sitios_y_Enlaces(RED red, int L, double xmb, double xms, double sig
 
     //Lista y red sitios
     tini = time(NULL);
-    /**/
-
     /*paralelización*/
 
 
@@ -307,27 +306,27 @@ int Num_violacSitios(RED red, int L, int *sit_viol) {
                 enlace_abajo = val_enlace(i, j, k, ABAJO, red, L);
                 enlace_atras = val_enlace(i, j, k, FONDO, red, L);
                 sitio = red[i][j][k].sitio.radio;
-                if (enlace_izquierdo > sitio) { //printf("ERROR ei:%f > s:%f\n",enlace_izquierdo,sitio);
+                if (enlace_izquierdo > sitio) { 
                     nviolT++;
                     flag = 1;
                 }
-                if (enlace_arriba > sitio) { //printf("ERROR earr:%f > s:%f\n",enlace_arriba,sitio);
+                if (enlace_arriba > sitio) { 
                     nviolT++;
                     flag = 1;
                 }
-                if (enlace_frente > sitio) { //printf("ERROR ef:%f > s:%f\n",enlace_frente,sitio);
+                if (enlace_frente > sitio) { 
                     nviolT++;
                     flag = 1;
                 }
-                if (enlace_derecha > sitio) { //printf("ERROR ed:%f > s:%f\n",enlace_derecha,sitio);
+                if (enlace_derecha > sitio) { 
                     nviolT++;
                     flag = 1;
                 }
-                if (enlace_abajo > sitio) { //printf("ERROR eab:%f > s:%f\n",enlace_abajo,sitio);
+                if (enlace_abajo > sitio) { 
                     nviolT++;
                     flag = 1;
                 }
-                if (enlace_atras > sitio) { //printf("ERROR eat:%f > s:%f\n",enlace_atras,sitio);
+                if (enlace_atras > sitio) { 
                     nviolT++;
                     flag = 1;
                 }
@@ -622,8 +621,6 @@ void batidotEq_MC_Seq(RED red, int L, int randi[55], int *j_ran) {
         j2 = (int) (L * ran01(randi, j_ran));
         k2 = (int) (L * ran01(randi, j_ran));
 
-
-        //printf("c: %d ",control);
         switch (control) {
             case 0: //sitio - sitio
             {
@@ -681,15 +678,6 @@ void batidotEq_MC_Seq(RED red, int L, int randi[55], int *j_ran) {
                     swap(&red[i1][j1][k1].yb.radio, &red[i2][j2][k2].yb.radio); //Re-Cambio los Bond_x
                 break;
             }
-                //		case 6:  // enlace_y - enlace_z'   ABA-FON
-                //		{
-                //			e1t=cuenta_viogeomBy_A(red,L,i1,j1,k1,1.0)+cuenta_viogeomBz_A(red,L,i2,j2,k2,1.0);
-                //			swap(&red[i1][j1][k1].yb.radio,&red[i2][j2][k2].zb.radio); // Cambio los enlace
-                //			e2t=cuenta_viogeomBy_A(red,L,i1,j1,k1,1.0)+cuenta_viogeomBz_A(red,L,i2,j2,k2,1.0);
-                //			if (e1t < e2t)
-                //				swap(&red[i1][j1][k1].yb.radio,&red[i2][j2][k2].zb.radio); //Re-Cambio
-                //			break;
-                //		}
             case 7: // enlace_z - enlace_z'	FON-FON
             {
                 e1t = cuenta_viogeomBz_A(red, L, i1, j1, k1, 1.0) + cuenta_viogeomBz_A(red, L, i2, j2, k2, 1.0);
@@ -764,7 +752,6 @@ double NBatidos_T2_RG_MC_Seq(RED red, const int L, double nBATIDOS, unsigned lon
             *nBatidos_Real = nbat;
             printf("Batido No. %lu, con %d sitios con violaciones\n", *nBatidos_Real, gsit_viola);
         }
-
         continuar = nBATIDOS == 0.0 ? gsit_viola > 0 : nbat <= nBATIDOS;
         if (gsit_viola == 0)
             continuar = 0;
