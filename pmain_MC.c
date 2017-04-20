@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
 
 
 
-    NBatidos_T2_RG_MC_Seq(red, L, (double) NBatidos, &nBatidos_Real, randi, &j_ran);
+    NBatidos_T2_RG_MC_Seq(red, L, &nBatidos_Real, randi, &j_ran);
 
     nviol_en_sit = Num_violacSitios(red, L, &sit_viola); //Violaciones tipo 1
     printf("\nDESPUES DE BATIDOS\nNo.Violaciones en Sitios antes Certificacion (Tipo 1): %d, Num Sit c/viol: %d\n", nviol_en_sit, sit_viola);

@@ -12,6 +12,3 @@ void ImgGnuplot3D_x_conectividad(RED red, cadena nom_arch, int L, double xms, do
 void ImgGnuplot3D_x_size(RED red, cadena nom_arch, int L, double xms, double sigma);
 
 #endif
-
-
-

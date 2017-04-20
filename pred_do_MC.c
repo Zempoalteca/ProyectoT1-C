@@ -678,6 +678,22 @@ void batidotEq_MC_Seq(RED red, int L, int randi[55], int *j_ran) {
                     swap(&red[i1][j1][k1].yb.radio, &red[i2][j2][k2].yb.radio); //Re-Cambio los Bond_x
                 break;
             }
+            case 6: // enlace_y - enlace_z'   ABA-FON
+                e1t = cuenta_viogeomBy_A(red, L, i1, j1, k1, 1.0) + cuenta_viogeomBz_A(red, L, i2, j2, k2, 1.0);
+                swap(&red[i1][j1][k1].yb.radio,&red[i2][j2][k2].zb.radio);
+                e2t = cuenta_viogeomBy_A(red, L, i1, j1, k1, 1.0) + cuenta_viogeomBz_A(red, L, i2, j2, k2, 1.0);
+                if(e1t < e2t)
+                    swap(&red[i1][j1][k1].yb.radio,&red[i2][j2][k2].zb.radio);
+                break;
+            	//		case 6:  // enlace_y - enlace_z'   ABA-FON
+	//		{
+	//			e1t=cuenta_viogeomBy_A(red,L,i1,j1,k1,1.0)+cuenta_viogeomBz_A(red,L,i2,j2,k2,1.0);
+	//			swap(&red[i1][j1][k1].yb.radio,&red[i2][j2][k2].zb.radio); // Cambio los enlace
+	//			e2t=cuenta_viogeomBy_A(red,L,i1,j1,k1,1.0)+cuenta_viogeomBz_A(red,L,i2,j2,k2,1.0);
+	//			if (e1t < e2t)
+	//				swap(&red[i1][j1][k1].yb.radio,&red[i2][j2][k2].zb.radio); //Re-Cambio
+	//			break;
+	//		}
             case 7: // enlace_z - enlace_z'	FON-FON
             {
                 e1t = cuenta_viogeomBz_A(red, L, i1, j1, k1, 1.0) + cuenta_viogeomBz_A(red, L, i2, j2, k2, 1.0);
@@ -731,7 +747,7 @@ void batidotEq_MC_Seq(RED red, int L, int randi[55], int *j_ran) {
 }
 
 /** Fucion principal Batidos **/
-double NBatidos_T2_RG_MC_Seq(RED red, const int L, double nBATIDOS, unsigned long int *nBatidos_Real, int randi[55], int *j_ran) {
+double NBatidos_T2_RG_MC_Seq(RED red, const int L, unsigned long int *nBatidos_Real, int randi[55], int *j_ran) {
     int gsit_viola, sit_viola;
     int continuar, nviol_en_sit;
     double nbat;
@@ -741,18 +757,24 @@ double NBatidos_T2_RG_MC_Seq(RED red, const int L, double nBATIDOS, unsigned lon
     gsit_viola += sit_viola;
 
     nbat = 0.0;
-    continuar = nBATIDOS == 0.0 ? gsit_viola > 0 : nbat <= nBATIDOS;
+    //continuar = nBATIDOS == 0.0 ? gsit_viola > 0 : nbat <= nBATIDOS;
     continuar = 1;
     while (continuar) {
         batidotEq_MC_Seq(red, L, randi, j_ran);
         nbat = nbat + 1.0;
+        ////////////////
+        nviol_en_sit = Num_violacGeom_A(red, L, 1.0, &sit_viola); //Num_viola_tipo2(red,L);
+        gsit_viola = sit_viola;
+        *nBatidos_Real = nbat;
+        printf("Batido #: %f\n",nbat);
+        ////////////////
         if (fmod(nbat, 20.0f) == 0.0) {
-            nviol_en_sit = Num_violacGeom_A(red, L, 1.0, &sit_viola); //Num_viola_tipo2(red,L);
+            /*nviol_en_sit = Num_violacGeom_A(red, L, 1.0, &sit_viola); //Num_viola_tipo2(red,L);
             gsit_viola = sit_viola;
-            *nBatidos_Real = nbat;
+            *nBatidos_Real = nbat;*/
             printf("Batido No. %lu, con %d sitios con violaciones\n", *nBatidos_Real, gsit_viola);
         }
-        continuar = nBATIDOS == 0.0 ? gsit_viola > 0 : nbat <= nBATIDOS;
+        //continuar = nBATIDOS == 0.0 ? gsit_viola > 0 : nbat <= nBATIDOS;
         if (gsit_viola == 0)
             continuar = 0;
     }
