@@ -20,7 +20,6 @@ int main(int argc, char *argv[]) {
     double Translape, Ri;
     int k_aps;
     int NCLUSTERS, CLUSTER_SIZE;
-    int NBatidos;
     unsigned long int nBatidos_Real;
     int nthreads;
     cadena name_red, name_3DGnuplot_conec, name_3DGnuplot_size, main_name, name_aux;
@@ -39,7 +38,6 @@ int main(int argc, char *argv[]) {
     double f0 = 0.5;
 
     enl_vacios = 0;
-    NBatidos = 0;
 
     if (argc == 6) {//Batidos
         L = atoi(argv[1]);
@@ -47,7 +45,6 @@ int main(int argc, char *argv[]) {
         xms = atof(argv[3]);
         sigma = atof(argv[4]);
         f0 = atof(argv[5]);
-        NBatidos = 0;
     } else {
         fprintf(stderr, "\nParametros invalidos\n");
         fprintf(stderr, "\nCreacion\nUso: %s  L xmb xms sigma f0\ni.e. %s 50 26 46 6 0.4\n\n", argv[0], argv[0]);
