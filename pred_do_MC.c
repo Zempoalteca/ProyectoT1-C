@@ -19,13 +19,11 @@
 void Gen_Rand(rand_t *myrand) {
     int i, jj = 0;
     myrand->general = 0;
-
     for (i = 0; i < Nknudt; i++) {
         myrand->v_255[i] = (i + 1) % Nknudt;
         myrand->knudt[i] = rand();
         myrand->v_122[i] = (i + 120) % Nknudt;
     }
-
     for (i = 0; i < 10000; i++) {
         myrand->knudt[jj] = myrand->knudt[jj] + myrand->knudt[myrand->v_122[jj]];
         jj = myrand->v_255[jj];
@@ -36,7 +34,6 @@ void Gen_Rand(rand_t *myrand) {
 
 /*Funcion a integrar*/
 double f(double Ri, double xrb, double sigma) {
-    //printf("pi=%f\n",Pi);
     return (1 / (sqrt(2 * Pi) * sigma))*(exp((-1.0 * (pow((Ri - xrb), 2))) / (2 * pow(sigma, 2))));
 }
 
@@ -46,7 +43,6 @@ void Trapecio(double n, double *Area, double *Translape, double *Ri, double xrb,
     double h = 0;
     double So = 0.0;
     int signo = 1;
-
     if (inf >= sup) {
         inf = inf + 20;
         sup = sup - 10;
@@ -63,17 +59,14 @@ void Trapecio(double n, double *Area, double *Translape, double *Ri, double xrb,
 double punt_inters(double xrs, double xrb) {
     double ri;
     double Rs = xrs, Rb = xrb;
-
     ri = ((pow(Rs, 2) - pow(Rb, 2)) / (2 * (Rs - Rb)));
     return (ri);
 }
 
 void Red_Translape(double xms, double xmb, double sigma, double *Translape, double *Ri) {
-
     double n = 999;
     double xrs = xms, xrb = xmb;
     double Area;
-
     *Ri = punt_inters(xrs, xrb);
     printf("\n ================================================");
     printf("\n Punto de Interseccion = %f", *Ri);
@@ -88,12 +81,9 @@ void Red_Translape(double xms, double xmb, double sigma, double *Translape, doub
 void randomizar(int *randi, int *j_ran) {
     int i_ran, j_ran2;
     int num_vueltas = 1000000;
-
     *j_ran = 0;
-
     for (i_ran = 0; i_ran < 55; i_ran++)
         randi[i_ran] = (int) rand();
-
     for (j_ran2 = 0; j_ran2 < num_vueltas; j_ran2++) {
         (*j_ran) = ((*j_ran) + 1) % 55; // mas1_55[(*j_ran)];
         randi[(*j_ran)] = randi[(*j_ran)] + randi[((*j_ran) + 31) % 55]; // randi[mas31_55[(*j_ran)]];
@@ -113,7 +103,6 @@ RED crea_matriz_poros(int m) {
 }
 
 // Funciones para calcular limites
-
 double ran01(int randi[55], int *j_ran) {
     (*j_ran) = ((*j_ran) + 1) % 55;
     randi[(*j_ran)] = randi[(*j_ran)] + randi[((*j_ran) + 31) % 55];
@@ -122,7 +111,6 @@ double ran01(int randi[55], int *j_ran) {
 
 //Elige al azar una X y Y de la distribucion gaussiana y evalua la X.
 //sale de la funcion cuando el valor evaluado es mayor que el Y al azar
-
 float Sortedi(double delta, double lim_inf, double altura, double xm, double sigma, int randi[55], int *j_ran) {
     double xsorteo, ysorteo, yvalor;
     int resultado;
@@ -163,30 +151,22 @@ double calcula_deltaS(double lim_sup, double lim_inf) {
 
 /* Genera la red y coloca los sitios de mayor a menor*/
 void Ini_red_Sitios_y_Enlaces(RED red, int L, double xmb, double xms, double sigma, double alturaB, double alturaS, double f0, int randi[55], int *j_ran) {
-
     double lim_inf_B, lim_inf_S, deltaB, deltaS;
     int i, j, k = 0;
     double rxb, ryb, rzb;
     double tini, tfin;
     int cont0 = 0;
-
-
     //Lista y red sitios
     tini = time(NULL);
     /*paralelización*/
-
-
     lim_inf_B = calcula_lim_inf_B(sigma, xmb);
     lim_inf_S = calcula_lim_inf_S(sigma, xms);
-
     deltaB = calcula_deltaB(calcula_lim_sup_B(sigma, xmb), lim_inf_B);
     deltaS = calcula_deltaS(calcula_lim_sup_S(sigma, xms), lim_inf_S);
-
     for (i = 0; i < L; i++)
         for (j = 0; j < L; j++)
             for (k = 0; k < L; k++) {
                 red[i][j][k].sitio.radio = Sortedi(deltaS, lim_inf_S, alturaS, xms, sigma, randi, j_ran);
-
                 if (ran01(randi, j_ran) > f0)
                     rxb = Sortedi(deltaB, lim_inf_B, alturaB, xmb, sigma, randi, j_ran);
                 else {
@@ -205,26 +185,20 @@ void Ini_red_Sitios_y_Enlaces(RED red, int L, double xmb, double xms, double sig
                     cont0++;
                     rzb = 0.0;
                 }
-
-
                 red[i][j][k].xb.radio = rxb;
                 red[i][j][k].yb.radio = ryb;
                 red[i][j][k].zb.radio = rzb;
-
-                red[i][j][k].sitio.radio_lleno = 0.0;
+                /*red[i][j][k].sitio.radio_lleno = 0.0;
                 red[i][j][k].xb.radio_lleno = 0.0;
                 red[i][j][k].yb.radio_lleno = 0.0;
-                red[i][j][k].zb.radio_lleno = 0.0;
-
+                red[i][j][k].zb.radio_lleno = 0.0;*/
             }
-
     tfin = time(NULL);
     printf("Tiempo de inicialización de red:%f\n", tfin - tini);
 }
 
 double val_enlace(int i, int j, int k, int dir, RED red, int L) {
     double result = 0.0;
-
     switch (dir) {
         case IZQUIERDA: result = red[i][j][k].xb.radio;
             break;
@@ -243,23 +217,17 @@ double val_enlace(int i, int j, int k, int dir, RED red, int L) {
 }
 
 RED Inicializa_Red_RG_CV(int L, double xmb_i, double xms, double sigma, double alturaB, double alturaS, double f0, int randi[55], int * j_ran) {
-
-    long timeini, timefin;
     RED red;
-
     red = crea_matriz_poros(L);
     Ini_red_Sitios_y_Enlaces(red, L, xmb_i, xms, sigma, alturaB, alturaS, f0, randi, j_ran);
-
     return red;
 }
 
 //*****************Red_guarda************************************
-
 void Save_Red(RED red, cadena outfile_red, cadena ext, int L) {
     FILE *filered;
     int i, j, k;
     cadena archivo_red;
-
     strcpy(archivo_red, outfile_red);
     strcat(archivo_red, ext);
     if ((filered = fopen(archivo_red, "wb")) == NULL) {
@@ -282,18 +250,15 @@ void Red_guarda(RED red, int L, cadena r_red) {
     Save_Red(red, r_red, ".bin", L);
 }
 
-
 //**********  funciones de validacion de redes
 //************************************************
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //************************************************	Num_viola_tipo2()
 
 //      regresa el numero de violaciones tipo 1 en cada unión enlace-sitio
-
 int Num_violacSitios(RED red, int L, int *sit_viol) {
     int i, j, k, nviolT = 0, flag = 0;
     double enlace_izquierdo, enlace_abajo, enlace_frente, enlace_derecha, enlace_arriba, enlace_atras, sitio;
-
     *sit_viol = 0;
     for (i = 0; i < L; i++)
         for (j = 0; j < L; j++)
@@ -337,7 +302,6 @@ int Num_violacSitios(RED red, int L, int *sit_viol) {
 
 int errores_geom_A(double en_derecha, double en_abajo, double en_izquierdo, double en_arriba, double en_frente, double en_fondo, double sitio, double A) {
     int viol_geom = 0;
-
     if ((A * (pow(en_derecha, 2.0) + pow(en_frente, 2.0))) > pow(sitio, 2.0)) viol_geom++;
     if ((A * (pow(en_abajo, 2.0) + pow(en_frente, 2.0))) > pow(sitio, 2.0)) viol_geom++;
     if ((A * (pow(en_izquierdo, 2.0) + pow(en_frente, 2.0))) > pow(sitio, 2.0)) viol_geom++;
@@ -350,21 +314,18 @@ int errores_geom_A(double en_derecha, double en_abajo, double en_izquierdo, doub
     if ((A * (pow(en_abajo, 2.0) + pow(en_derecha, 2.0))) > pow(sitio, 2.0)) viol_geom++;
     if ((A * (pow(en_arriba, 2.0) + pow(en_izquierdo, 2.0))) > pow(sitio, 2.0)) viol_geom++;
     if ((A * (pow(en_abajo, 2.0) + pow(en_izquierdo, 2.0))) > pow(sitio, 2.0)) viol_geom++;
-
     if (en_derecha > sitio) viol_geom++;
     if (en_abajo > sitio) viol_geom++;
     if (en_izquierdo > sitio) viol_geom++;
     if (en_arriba > sitio) viol_geom++;
     if (en_frente > sitio) viol_geom++;
     if (en_fondo > sitio) viol_geom++;
-
     return viol_geom;
 }
 
 int Num_violacGeom_A(RED red, int L, double A, int *sit_viol) {
     int i, j, k, nviolgeom = 0, nviolG = 0, nsviol = 0;
     double enlace_izquierdo, enlace_abajo, enlace_frente, enlace_derecha, enlace_arriba, enlace_atras, sitio;
-
     for (i = 0; i < L; i++)
         for (j = 0; j < L; j++)
             for (k = 0; k < L; k++) {
@@ -389,7 +350,6 @@ int Num_viola_tipo2(RED red, int L, int *enl_vacios) {
     double sitio_cuadrado;
     double en1c, en2c, en3c, en4c, en5c, en6c;
     int viola = 0;
-
     *enl_vacios = 0;
     for (i = 0; i < L; i++)
         for (j = 0; j < L; j++)
@@ -426,7 +386,6 @@ int Num_viola_tipo2(RED red, int L, int *enl_vacios) {
                         ((en6c + en3c) > sitio_cuadrado) ||
                         ((en6c + en4c) > sitio_cuadrado))
                     viola++;
-
                 if (val_enlace(i, j, k, ABAJO, red, L) == 0.0) (*enl_vacios)++;
                 if (val_enlace(i, j, k, IZQUIERDA, red, L) == 0.0) (*enl_vacios)++;
                 if (val_enlace(i, j, k, FONDO, red, L) == 0.0) (*enl_vacios)++;
@@ -436,7 +395,6 @@ int Num_viola_tipo2(RED red, int L, int *enl_vacios) {
 
 /***************************************************************************************/
 /*************************** Funciones para Batidos ************************************/
-
 /***************************************************************************************/
 
 double sitizq(RED red, int X, int Y, int Z, int L) {
@@ -452,7 +410,6 @@ double sitatras(RED red, int X, int Y, int Z, int L) {
 }
 
 //Regresa el radio del sitio actual
-
 double sitioac(RED red, int i, int j, int k) {
     return (red[i][j][k].sitio.radio);
 };
@@ -484,7 +441,6 @@ int viol_sitio_sitizq_A(double en_frente, double en_abajo, double en_atras, doub
     if ((A * (pow(en_arriba_sitizq, 2.0) + pow(en_izquierdo, 2.0))) > pow(sitio_izq, 2.0)) viol_geom++;
     if (en_izquierdo > sitio) viol_geom++;
     if (en_izquierdo > sitio_izq) viol_geom++;
-
     return viol_geom;
 }
 
@@ -493,20 +449,17 @@ int cuenta_viogeomBx_A(RED red, int L, int X, int Y, int Z, double A) {
     int violaciones = 0;
     double enlace_izquierdo, enlace_arriba, enlace_frente, enlace_abajo, enlace_atras, sitio;
     double enlace_arriba_sitizq, enlace_frente_sitizq, enlace_abajo_sitizq, enlace_atras_sitizq, sitio_izquierdo;
-
     enlace_izquierdo = val_enlace(X, Y, Z, IZQUIERDA, red, L);
     enlace_arriba = val_enlace(X, Y, Z, ARRIBA, red, L);
     enlace_frente = val_enlace(X, Y, Z, FRENTE, red, L);
     enlace_abajo = val_enlace(X, Y, Z, ABAJO, red, L);
     enlace_atras = val_enlace(X, Y, Z, FONDO, red, L);
-
     enlace_arriba_sitizq = val_enlace((X - 1 + L) % L, Y, Z, ARRIBA, red, L);
     enlace_frente_sitizq = val_enlace((X - 1 + L) % L, Y, Z, FRENTE, red, L);
     enlace_abajo_sitizq = val_enlace((X - 1 + L) % L, Y, Z, ABAJO, red, L);
     enlace_atras_sitizq = val_enlace((X - 1 + L) % L, Y, Z, FONDO, red, L);
     sitio = sitioac(red, X, Y, Z);
     sitio_izquierdo = sitizq(red, X, Y, Z, L);
-
     violaciones = viol_sitio_sitizq_A(enlace_frente, enlace_abajo, enlace_atras, enlace_arriba, enlace_frente_sitizq, enlace_abajo_sitizq, enlace_atras_sitizq,
             enlace_arriba_sitizq, enlace_izquierdo, sitio, sitio_izquierdo, A);
     return violaciones;
@@ -524,8 +477,6 @@ int viol_sitio_sitabajo_A(double en_frente, double en_izquierdo, double en_atras
     if ((A * (pow(en_derecha_sitabajo, 2.0) + pow(en_abajo, 2.0))) > pow(sitio_abajo, 2.0)) viol_geom++;
     if (en_abajo > sitio) viol_geom++;
     if (en_abajo > sitio_abajo) viol_geom++;
-
-
     return viol_geom;
 }
 
@@ -534,20 +485,17 @@ int cuenta_viogeomBy_A(RED red, int L, int X, int Y, int Z, double A) {
     int violaciones = 0;
     double enlace_abajo, enlace_izquierdo, enlace_frente, enlace_derecha, enlace_atras, sitio, sitio_abajo;
     double enlace_izquierdo_sitabajo, enlace_frente_sitabajo, enlace_derecha_sitabajo, enlace_atras_sitabajo;
-
     enlace_izquierdo = val_enlace(X, Y, Z, IZQUIERDA, red, L);
     enlace_frente = val_enlace(X, Y, Z, FRENTE, red, L);
     enlace_derecha = val_enlace(X, Y, Z, DERECHA, red, L);
     enlace_atras = val_enlace(X, Y, Z, FONDO, red, L);
     enlace_abajo = val_enlace(X, Y, Z, ABAJO, red, L);
-
     enlace_izquierdo_sitabajo = val_enlace(X, (Y - 1 + L) % L, Z, IZQUIERDA, red, L);
     enlace_frente_sitabajo = val_enlace(X, (Y - 1 + L) % L, Z, FRENTE, red, L);
     enlace_derecha_sitabajo = val_enlace(X, (Y - 1 + L) % L, Z, DERECHA, red, L);
     enlace_atras_sitabajo = val_enlace(X, (Y - 1 + L) % L, Z, FONDO, red, L);
     sitio = sitioac(red, X, Y, Z);
     sitio_abajo = sitabajo(red, X, Y, Z, L);
-
     violaciones = viol_sitio_sitabajo_A(enlace_frente, enlace_izquierdo, enlace_atras, enlace_derecha, enlace_frente_sitabajo, enlace_izquierdo_sitabajo,
             enlace_atras_sitabajo, enlace_derecha_sitabajo, enlace_abajo, sitio, sitio_abajo, A);
     return violaciones;
@@ -565,7 +513,6 @@ int viol_sitio_sitatras_A(double en_derecha, double en_abajo, double en_izquierd
     if ((A * (pow(en_arriba_sitatras, 2.0) + pow(en_atras, 2.0))) > pow(sitio_atras, 2.0)) viol_geom++;
     if (en_atras > sitio) viol_geom++;
     if (en_atras > sitio_atras) viol_geom++;
-
     return viol_geom;
 }
 
@@ -574,13 +521,11 @@ int cuenta_viogeomBz_A(RED red, int L, int X, int Y, int Z, double A) {
     int violaciones = 0;
     double enlace_atras, enlace_izquierdo, enlace_arriba, enlace_derecha, enlace_abajo, sitio, sitio_atras;
     double enlace_derecha_sitatras, enlace_abajo_sitatras, enlace_izquierdo_sitatras, enlace_arriba_sitatras;
-
     enlace_izquierdo = val_enlace(X, Y, Z, IZQUIERDA, red, L);
     enlace_arriba = val_enlace(X, Y, Z, ARRIBA, red, L);
     enlace_derecha = val_enlace(X, Y, Z, DERECHA, red, L);
     enlace_abajo = val_enlace(X, Y, Z, ABAJO, red, L);
     enlace_atras = val_enlace(X, Y, Z, FONDO, red, L);
-
     enlace_izquierdo_sitatras = val_enlace(X, Y, (Z - 1 + L) % L, IZQUIERDA, red, L);
     enlace_arriba_sitatras = val_enlace(X, Y, (Z - 1 + L) % L, ARRIBA, red, L);
     enlace_derecha_sitatras = val_enlace(X, Y, (Z - 1 + L) % L, DERECHA, red, L);
@@ -592,9 +537,7 @@ int cuenta_viogeomBz_A(RED red, int L, int X, int Y, int Z, double A) {
     return violaciones;
 }
 
-
 //Intercambia dos sitios o enlaces
-
 void swap(double *X1, double *X2) {
     double aux;
     aux = *X1;
@@ -603,29 +546,23 @@ void swap(double *X1, double *X2) {
 }
 
 //Bate una red considerando restricciones geométricas Tipo 2
-
 void batidotEq_MC_Seq(RED red, int L, int randi[55], int *j_ran) {
     int i1, j1, k1, i2, j2, k2, e1t, e2t, control, iLE;
-    int p1, p2, nswap;
-    //posicion p;
-
+    int nswap;
     for (nswap = 0; nswap < 3 * L * L * L; nswap++) {
         //Genera un numero aleatorio entre 0 y 11
         // Para cambiar sitios y enlaces con la misma prob /
         control = (int) (12.0 * ran01(randi, j_ran));
-
         i1 = (int) (L * ran01(randi, j_ran));
         j1 = (int) (L * ran01(randi, j_ran));
         k1 = (int) (L * ran01(randi, j_ran));
         i2 = (int) (L * ran01(randi, j_ran));
         j2 = (int) (L * ran01(randi, j_ran));
         k2 = (int) (L * ran01(randi, j_ran));
-
         switch (control) {
             case 0: //sitio - sitio
             {
                 e1t = error_geom_sitios_A(red, L, i1, j1, k1, 1.0) + error_geom_sitios_A(red, L, i2, j2, k2, 1.0);
-                ;
                 swap(&(red[i1][j1][k1].sitio.radio), &(red[i2][j2][k2].sitio.radio)); // Cambio los sitios
                 e2t = error_geom_sitios_A(red, L, i1, j1, k1, 1.0) + error_geom_sitios_A(red, L, i2, j2, k2, 1.0);
                 if (e1t < e2t)
@@ -685,15 +622,6 @@ void batidotEq_MC_Seq(RED red, int L, int randi[55], int *j_ran) {
                 if(e1t < e2t)
                     swap(&red[i1][j1][k1].yb.radio,&red[i2][j2][k2].zb.radio);
                 break;
-            	//		case 6:  // enlace_y - enlace_z'   ABA-FON
-	//		{
-	//			e1t=cuenta_viogeomBy_A(red,L,i1,j1,k1,1.0)+cuenta_viogeomBz_A(red,L,i2,j2,k2,1.0);
-	//			swap(&red[i1][j1][k1].yb.radio,&red[i2][j2][k2].zb.radio); // Cambio los enlace
-	//			e2t=cuenta_viogeomBy_A(red,L,i1,j1,k1,1.0)+cuenta_viogeomBz_A(red,L,i2,j2,k2,1.0);
-	//			if (e1t < e2t)
-	//				swap(&red[i1][j1][k1].yb.radio,&red[i2][j2][k2].zb.radio); //Re-Cambio
-	//			break;
-	//		}
             case 7: // enlace_z - enlace_z'	FON-FON
             {
                 e1t = cuenta_viogeomBz_A(red, L, i1, j1, k1, 1.0) + cuenta_viogeomBz_A(red, L, i2, j2, k2, 1.0);
@@ -701,7 +629,6 @@ void batidotEq_MC_Seq(RED red, int L, int randi[55], int *j_ran) {
                 e2t = cuenta_viogeomBz_A(red, L, i1, j1, k1, 1.0) + cuenta_viogeomBz_A(red, L, i2, j2, k2, 1.0);
                 if (e1t < e2t)
                     swap(&red[i1][j1][k1].zb.radio, &red[i2][j2][k2].zb.radio); //Re-Cambio los Bond_x
-
                 break;
             }
             case 8: // enlace_z - enlace_y'	FON-ABA
@@ -751,34 +678,24 @@ double NBatidos_T2_RG_MC_Seq(RED red, const int L, unsigned long int *nBatidos_R
     int gsit_viola, sit_viola;
     int continuar, nviol_en_sit;
     double nbat;
-
     nviol_en_sit = Num_violacGeom_A(red, L, 1.0, &sit_viola); //Num_viola_tipo2(red,L);
-
     gsit_viola += sit_viola;
-
+    printf("Batido No. %lu, con %d sitios con violaciones\n", *nBatidos_Real, gsit_viola);
     nbat = 0.0;
-    //continuar = nBATIDOS == 0.0 ? gsit_viola > 0 : nbat <= nBATIDOS;
     continuar = 1;
     while (continuar) {
         batidotEq_MC_Seq(red, L, randi, j_ran);
         nbat = nbat + 1.0;
-        ////////////////
         nviol_en_sit = Num_violacGeom_A(red, L, 1.0, &sit_viola); //Num_viola_tipo2(red,L);
         gsit_viola = sit_viola;
         *nBatidos_Real = nbat;
-        printf("Batido #: %f\n",nbat);
-        ////////////////
         if (fmod(nbat, 20.0f) == 0.0) {
-            /*nviol_en_sit = Num_violacGeom_A(red, L, 1.0, &sit_viola); //Num_viola_tipo2(red,L);
-            gsit_viola = sit_viola;
-            *nBatidos_Real = nbat;*/
             printf("Batido No. %lu, con %d sitios con violaciones\n", *nBatidos_Real, gsit_viola);
         }
-        //continuar = nBATIDOS == 0.0 ? gsit_viola > 0 : nbat <= nBATIDOS;
         if (gsit_viola == 0)
             continuar = 0;
     }
     *nBatidos_Real = nbat;
-
+    printf("Batido No. %lu, con %d sitios con violaciones\n", *nBatidos_Real, gsit_viola);
     return (0);
 }
